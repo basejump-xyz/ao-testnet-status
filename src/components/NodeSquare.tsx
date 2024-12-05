@@ -1,26 +1,17 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { checkNodeStatus } from "../lib/checkNodeStatus";
+import { useQueryClient, UseQueryResult } from "@tanstack/react-query";
 import { Loader2, ExternalLink } from "lucide-react";
 import { useState } from "react";
 
 interface NodeSquareProps {
   nodeNumber: number;
+  queryData: UseQueryResult<boolean, Error>;
 }
 
-export function NodeSquare({ nodeNumber }: NodeSquareProps) {
+export function NodeSquare({ nodeNumber, queryData }: NodeSquareProps) {
   const queryClient = useQueryClient();
   const [isHovered, setIsHovered] = useState(false);
 
   const nodeUrl = `https://cu${nodeNumber}.ao-testnet.xyz/`;
-
-  const { data: isOnline, isFetching } = useQuery({
-    queryKey: ["node", nodeNumber],
-    queryFn: () => checkNodeStatus(nodeUrl),
-    refetchInterval: 60000,
-    retry: 1,
-    retryDelay: 1000,
-    staleTime: 30000,
-  });
 
   const handleClick = () => {
     queryClient.invalidateQueries({ queryKey: ["node", nodeNumber] });
@@ -32,7 +23,11 @@ export function NodeSquare({ nodeNumber }: NodeSquareProps) {
     window.open(nodeUrl, "_blank");
   };
 
-  const status = isFetching ? "loading" : isOnline ? "online" : "offline";
+  const status = queryData.isFetching
+    ? "loading"
+    : queryData.data
+    ? "online"
+    : "offline";
 
   return (
     <div
@@ -55,12 +50,12 @@ export function NodeSquare({ nodeNumber }: NodeSquareProps) {
         status.charAt(0).toUpperCase() + status.slice(1)
       }`}
     >
-      {isFetching ? (
+      {queryData.isFetching ? (
         <Loader2 className="h-4 w-4 text-white animate-spin" />
       ) : (
         <span className="text-sm font-medium text-white">{nodeNumber}</span>
       )}
-      {isHovered && !isFetching && (
+      {isHovered && !queryData.isFetching && (
         <div
           className="absolute top-1 right-1 p-1 rounded-full bg-black/20 hover:bg-black/40 transition-colors"
           onClick={handleExternalLink}

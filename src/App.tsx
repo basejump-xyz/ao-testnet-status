@@ -1,7 +1,9 @@
-import { useQueryClient } from "@tanstack/react-query";
+import { useQueries, useQueryClient } from "@tanstack/react-query";
 import { Button } from "./components/ui/button";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { NodeSquare } from "./components/NodeSquare";
+import { checkNodeStatus } from "./lib/checkNodeStatus";
+import { useEffect } from "react";
 
 const TOTAL_NODES = 150;
 const nodes = Array.from({ length: TOTAL_NODES }, (_, i) => i + 1);
@@ -9,10 +11,37 @@ const nodes = Array.from({ length: TOTAL_NODES }, (_, i) => i + 1);
 function App() {
   const queryClient = useQueryClient();
 
+  const nodeQueries = useQueries({
+    queries: nodes.map((nodeNumber) => ({
+      queryKey: ["node", nodeNumber],
+      queryFn: () => checkNodeStatus(`https://cu${nodeNumber}.ao-testnet.xyz/`),
+      refetchInterval: 60000,
+      retry: 1,
+      retryDelay: 1000,
+      staleTime: 30000,
+    })),
+  });
+
+  const allNodesOnline = nodeQueries.every(
+    (query) => !query.isLoading && query.data === true
+  );
+
+  // Update favicon based on status
+  useEffect(() => {
+    const favicon = document.querySelector('link[rel="icon"]');
+    console.log(favicon);
+    if (favicon) {
+      favicon.setAttribute(
+        "href",
+        allNodesOnline
+          ? "./network-status-green.svg"
+          : "./network-status-orange.svg"
+      );
+    }
+  }, [allNodesOnline]);
+
   const handleRefresh = () => {
-    nodes.forEach((node) => {
-      queryClient.invalidateQueries({ queryKey: ["node", node] });
-    });
+    queryClient.invalidateQueries({ queryKey: ["node"] });
   };
 
   return (
@@ -34,8 +63,12 @@ function App() {
         </div>
 
         <div className="grid grid-cols-6 sm:grid-cols-8 md:grid-cols-10 lg:grid-cols-12 xl:grid-cols-15 gap-2">
-          {nodes.map((nodeNumber) => (
-            <NodeSquare key={nodeNumber} nodeNumber={nodeNumber} />
+          {nodes.map((nodeNumber, index) => (
+            <NodeSquare
+              key={nodeNumber}
+              nodeNumber={nodeNumber}
+              queryData={nodeQueries[index]}
+            />
           ))}
         </div>
       </div>
