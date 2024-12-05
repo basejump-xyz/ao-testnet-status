@@ -26,9 +26,11 @@ function App() {
     })),
   });
 
-  const allNodesOnline = nodeQueries.every(
+  const onlineNodesCount = nodeQueries.filter(
     (query) => !query.isLoading && query.data === true
-  );
+  ).length;
+
+  const allNodesOnline = onlineNodesCount === TOTAL_NODES;
 
   // Update favicon based on status
   useEffect(() => {
@@ -54,8 +56,8 @@ function App() {
         <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
           <div>
             <h1 className="text-2xl font-bold">AO Testnet CU Node Status</h1>
-            <p className="text-sm text-muted-foreground mt-1">
-              Click on individual nodes to refresh their status
+            <p className="text-muted-foreground mt-1">
+              {onlineNodesCount} / {TOTAL_NODES} online
             </p>
           </div>
           <div className="flex items-center gap-4">
