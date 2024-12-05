@@ -1,5 +1,4 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { Card } from "./components/ui/card";
 import { Button } from "./components/ui/button";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { NodeSquare } from "./components/NodeSquare";
