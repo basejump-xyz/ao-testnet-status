@@ -1,6 +1,10 @@
 import { useQueries, useQueryClient } from "@tanstack/react-query";
 import { Button } from "./components/ui/button";
-import { ReloadIcon } from "@radix-ui/react-icons";
+import {
+  ReloadIcon,
+  GitHubLogoIcon,
+  DiscordLogoIcon,
+} from "@radix-ui/react-icons";
 import { NodeSquare } from "./components/NodeSquare";
 import { checkNodeStatus } from "./lib/checkNodeStatus";
 import { useEffect } from "react";
@@ -54,12 +58,30 @@ function App() {
               Click on individual nodes to refresh their status
             </p>
           </div>
-          <Button variant="default" onClick={handleRefresh}>
-            <span className="flex items-center gap-2">
-              <ReloadIcon className="h-4 w-4" />
-              Refresh All
-            </span>
-          </Button>
+          <div className="flex items-center gap-4">
+            <a
+              href="https://github.com/basejump-xyz/ao-testnet-status"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-foreground hover:text-foreground/80 transition-colors"
+            >
+              <GitHubLogoIcon className="h-5 w-5" />
+            </a>
+            <a
+              href="https://discord.gg/basejump"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-foreground hover:text-foreground/80 transition-colors"
+            >
+              <DiscordLogoIcon className="h-5 w-5" />
+            </a>
+            <Button variant="default" onClick={handleRefresh}>
+              <span className="flex items-center gap-2">
+                <ReloadIcon className="h-4 w-4" />
+                Refresh All
+              </span>
+            </Button>
+          </div>
         </div>
 
         <div className="grid grid-cols-6 sm:grid-cols-8 md:grid-cols-10 lg:grid-cols-12 xl:grid-cols-15 gap-2">
