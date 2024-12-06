@@ -2,38 +2,19 @@
 
 A React-based dashboard for monitoring testnet status, built with TypeScript and Vite.
 
-## Features
-
 - Real-time testnet status monitoring
 - React 18 with TypeScript
-- Modern UI with Tailwind CSS
-- Fast development with Vite
+- UI with Tailwind CSS
 
 ## Prerequisites
 
 - Node.js (v18 or higher)
 - npm or yarn
 
-## Installation
-
-1. Clone the repository:
-
-```bash
-git clone https://github.com/yourusername/testnet-status.git
-cd testnet-status
-```
-
-2. Install dependencies:
+## Development
 
 ```bash
 npm install
-```
-
-## Development
-
-To start the development server:
-
-```bash
 npm run dev
 ```
 
